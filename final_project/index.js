@@ -12,6 +12,25 @@ app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUni
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
+//get token from header
+    const token = req.header('Authorization')?.replace('Bearer ','');
+
+    if (!token){
+        return res.status(401).json(
+            {
+                error: 'Access denied. No token provided.'
+            }
+        );
+    }
+    try {
+        //validate token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-kety");
+        // add user from payload
+        req.user = decoded;
+        next();
+    }catch (ex) {
+        res.status(400).send('Invalid token. ');
+    }
 });
  
 const PORT =5000;
