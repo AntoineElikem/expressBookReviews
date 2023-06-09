@@ -16,6 +16,18 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 //only registered users can login
 regd_users.post("/login", (req,res) => {
   //Write your code here
+  const { username, password } = req.body;
+
+  if (!(username && password)){
+    return res.status(400).json({message: "Username and password are required."});
+}
+
+const user = user.find(user => user.username === username);
+
+if (!user){
+    return res.status(400).json({message: "Invalid username or password."});
+}
+
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
