@@ -164,10 +164,48 @@ myPromise.then(bookData => {
 
   
 
-//  Get book review
-public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+public_users.get('/review/:isbn', function (req, res) {
+    // Extract the isbn from the route parameter
+    const isbn = req.params.isbn;
+  
+    // Define a Promise that finds the book by the specified isbn and returns its reviews
+    let myPromise = new Promise ((resolve, reject) => {
+      setTimeout(() => {
+        // Get all the keys for the 'books' object
+        const keys = Object.keys(books);
+    
+        // Initialize a variable to hold the book with the specified isbn
+        let bookByIsbn = null;
+    
+        // Iterate through the 'books' object
+        for (let i = 0; i < keys.length; i++) {
+          // If the isbn of the current book matches the specified isbn, set 'bookByIsbn' to the current book
+          if (books[keys[i]].isbn === isbn) {
+            bookByIsbn = books[keys[i]];
+            break;
+          }
+        }
+    
+        // If no book was found with the specified isbn, reject the Promise
+        if (!bookByIsbn) {
+          reject(new Error('Book not found.'));
+        }
+    
+        // If a book was found with the specified isbn, resolve the Promise with the book's reviews
+        else {
+          resolve(bookByIsbn.reviews);
+        }
+      }, 2000);
+    });
+  
+    // Use the Promise to send a response
+    myPromise.then(reviews => {
+      res.status(200).json({reviews: reviews});
+    })
+    .catch(error => {
+      res.status(500).json({message: error.message});
+    });
 });
+
 
 module.exports.general = public_users;
