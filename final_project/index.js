@@ -24,7 +24,7 @@ app.use("/customer/auth/*", function auth(req,res,next){
     }
     try {
         //validate token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-kety");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || "your-secret-key");
         // add user from payload
         req.user = decoded;
         next();
